@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const errorHandler = require("./middleware/errorHandler");
-
+const authRoutes = require("./routes/authRoutes");
 const app = express();
 
 app.use(
@@ -19,7 +19,7 @@ app.get("/", (req, res) => {
   res.send("right endpoint");
 });
 
-// app.use("/api/auth", authRoutes);
+app.use("/api/auth", authRoutes);
 
 app.use(errorHandler);
 
