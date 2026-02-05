@@ -1,9 +1,8 @@
-const express = require("express");
-const cors = require("cors");
-const errorHandler = require("./middleware/errorHandler");
-const authRoutes = require("./routes/authRoutes");
+import express, { Request, Response } from "express";
+import cors from "cors";
+import errorHandler from "./middleware/errorHandler";
+import authRoutes from "./routes/authRoutes";
 const app = express();
-
 app.use(
   cors({
     origin: ["http://localhost:3000", "http://192.168.0.105:3000"],
@@ -12,15 +11,13 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
-
 app.use(express.json());
-
-app.get("/", (req, res) => {
+app.get("/", (req: Request, res: Response) => {
   res.send("right endpoint");
 });
-
 app.use("/api/auth", authRoutes);
-
+app.use("/api/employees", authRoutes);
+app.use("/api/attendance", authRoutes);
+app.use("/api/reports", authRoutes);
 app.use(errorHandler);
-
-module.exports = app;
+export default app;
