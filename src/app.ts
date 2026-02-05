@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import errorHandler from "./middleware/errorHandler";
 import authRoutes from "./routes/authRoutes";
+import employeesRoutes from "./routes/employees";
 const app = express();
 app.use(
   cors({
@@ -16,7 +17,7 @@ app.get("/", (req: Request, res: Response) => {
   res.send("right endpoint");
 });
 app.use("/api/auth", authRoutes);
-app.use("/api/employees", authRoutes);
+app.use("/api/employees", employeesRoutes);
 app.use("/api/attendance", authRoutes);
 app.use("/api/reports", authRoutes);
 app.use(errorHandler);
