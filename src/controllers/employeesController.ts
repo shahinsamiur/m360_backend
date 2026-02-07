@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import db from "../config/db";
 // import AppError from "../utils/AppError";
 import sendResponse from "../utils/response";
-
 export const getEmployees = async (
   req: Request,
   res: Response,
@@ -67,11 +66,27 @@ export const createEmployee = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const user = await db("employees")
-      .select("id", "name", "email")
-      .where("id", req.params.id);
+    const { name, age, designation, hiring_date, date_of_birth, salary } =
+      req.body;
 
-    sendResponse(res, 200, true, "Employee Account Created successful", user);
+    const photo_path = req.file ? req.file.filename : null;
+
+    const [employee] = await db("employees")
+      .insert({
+        name,
+        age,
+        designation,
+        hiring_date,
+        date_of_birth,
+        salary,
+        photo_path,
+      })
+      .returning("*");
+
+    res.status(201).json({
+      status: "success",
+      data: employee,
+    });
   } catch (error) {
     next(error);
   }
