@@ -5,6 +5,7 @@ import authRoutes from "./routes/authRoutes";
 import employeesRoutes from "./routes/employees";
 import AttendanceRoutes from "./routes/attendanceRoutes";
 import { multerErrorHandler } from "./middleware/multerErrorHandler";
+import reportsRoutes from "./routes/reportsRoutes";
 const app = express();
 app.use(
   cors({
@@ -22,6 +23,6 @@ app.use(multerErrorHandler);
 app.use("/api/auth", authRoutes);
 app.use("/api/employees", employeesRoutes);
 app.use("/api/attendance", AttendanceRoutes);
-app.use("/api/reports", authRoutes);
+app.use("/api/reports", reportsRoutes);
 app.use(errorHandler);
 export default app;
