@@ -8,18 +8,38 @@ export const getAttendance = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const { employee_id, date, start_date, end_date } = req.query;
+    const { employee_id, date, start_date, end_date, page, limit } = req.query;
 
     let query = db("attendance");
 
-    if (employee_id) query = query.where("employee_id", employee_id);
+    if (employee_id) query = query.where("employee_id", Number(employee_id));
     if (date) query = query.where("date", date);
-    if (start_date && end_date)
-      query = query.whereBetween("date", [start_date, end_date]);
+    if (start_date && end_date) {
+      query = query.whereRaw(`date::date BETWEEN ? AND ?`, [
+        start_date,
+        end_date,
+      ]);
+    }
 
-    const attendance = await query.select("*").orderBy("date", "desc");
+    // Pagination
+    const pageNumber = page ? Number(page) : 1;
+    const pageSize = limit ? Number(limit) : 10;
+    const offset = (pageNumber - 1) * pageSize;
 
-    sendResponse(res, 200, true, "Attendance fetched successfully", attendance);
+    const total = await query.clone().count("* as count").first(); // total rows matching filter
+
+    const attendance = await query
+      .select("*")
+      .orderBy("date", "desc")
+      .limit(pageSize)
+      .offset(offset);
+
+    sendResponse(res, 200, true, "Attendance fetched successfully", {
+      total: Number(total?.count || 0),
+      page: pageNumber,
+      limit: pageSize,
+      data: attendance,
+    });
   } catch (err) {
     next(err);
   }
