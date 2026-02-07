@@ -10,17 +10,37 @@ export const getEmployees = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const { search } = req.query;
+    const { search, name, page, limit } = req.query;
 
-    let query = db("employees").select("*");
+    let query = db("employees").whereNull("deleted_at");
 
-    if (search && typeof search === "string") {
-      query = query.where("name", "ilike", `%${search}%`);
+    const term = (search || name) as string;
+    if (term) {
+      query = query.where("name", "ilike", `%${term}%`);
     }
 
-    const users = await query;
+    const pageNumber = page ? Number(page) : 1;
+    const pageSize = limit ? Number(limit) : 10;
+    const offset = (pageNumber - 1) * pageSize;
 
-    sendResponse(res, 200, true, "Fetch successful", users);
+    const totalQuery = query.clone();
+    const totalResult = await totalQuery
+      .count<{ count: string }>("* as count")
+      .first();
+    const total = Number(totalResult?.count || 0);
+
+    const users = await query
+      .select("id", "name", "designation", "photo_path")
+      .orderBy("name", "asc")
+      .limit(pageSize)
+      .offset(offset);
+
+    sendResponse(res, 200, true, "Fetch successful", {
+      total,
+      page: pageNumber,
+      limit: pageSize,
+      data: users,
+    });
   } catch (error) {
     next(error);
   }
