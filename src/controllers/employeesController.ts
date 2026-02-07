@@ -188,9 +188,26 @@ export const deleteEmployee = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    await db("employees").where("id", req.params.id).delete();
-    await db("attendance").where("id", req.params.id).delete();
-    sendResponse(res, 200, true, "user deleted");
+    const employeeId = req.params.id;
+
+    // Soft delete employee
+    const [deletedEmployee] = await db("employees")
+      .where({ id: employeeId })
+      .update({ deleted_at: db.fn.now() })
+      .returning("*");
+
+    if (!deletedEmployee) {
+      sendResponse(res, 404, false, "Employee not found");
+      return;
+    }
+
+    sendResponse(
+      res,
+      200,
+      true,
+      "Employee soft-deleted successfully",
+      deletedEmployee,
+    );
   } catch (error) {
     next(error);
   }

@@ -14,7 +14,7 @@ exports.up = function (knex) {
     table.string("photo_path");
     table.timestamp("created_at").defaultTo(knex.fn.now());
     table.timestamp("updated_at").defaultTo(knex.fn.now());
-    table.timestamp("deleted_at"); // optional soft delete
+    table.timestamp("deleted_at");
   });
 };
 
