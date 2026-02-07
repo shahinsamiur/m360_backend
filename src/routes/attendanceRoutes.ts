@@ -1,10 +1,27 @@
 import express from "express";
-import * as authController from "../controllers/authController";
+
+import * as attendanceController from "../controllers/attendanceController";
 import validate from "../middleware/validate";
-import { loginSchema } from "../validators/authValidators";
+import { attendanceSchema } from "../validators/attendanceValidators";
 
 const router = express.Router();
 
-router.post("/", validate(loginSchema), authController.login);
+router.get("/", attendanceController.getAttendance);
+
+router.get("/:id", attendanceController.getAttendanceById);
+
+router.post(
+  "/",
+  validate(attendanceSchema),
+  attendanceController.createOrUpdateAttendance,
+);
+
+router.put(
+  "/:id",
+  validate(attendanceSchema),
+  attendanceController.updateAttendance,
+);
+
+router.delete("/:id", attendanceController.deleteAttendance);
 
 export default router;

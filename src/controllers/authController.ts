@@ -12,20 +12,21 @@ export const login = async (
 ): Promise<void> => {
   try {
     const { email, password } = req.body;
-
+    console.log("hitted");
     const users = await db("hr_users")
       .select("id", "name", "email", "password_hash")
       .where("email", email);
-
+    console.log(users);
+    const user = users[0];
     if (users.length === 0) {
       throw new AppError("Invalid email or password", 401);
     }
 
-    const user = users[0];
     // console.log(user);
     // const hashedPassword = await bcrypt.hash(password, 10);
     // console.log(hashedPassword);
     const isMatch = await bcrypt.compare(password, user.password_hash);
+
     if (!isMatch) {
       throw new AppError("Invalid email or password", 401);
     }

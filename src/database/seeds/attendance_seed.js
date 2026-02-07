@@ -1,17 +1,18 @@
 exports.seed = async function (knex) {
   await knex("attendance").del();
 
-  const employees = await knex("employees").select("id");
+  await knex("attendance").insert([
+    { employee_id: 1, date: "2025-01-29", check_in_time: "09:05:00" },
+    { employee_id: 1, date: "2025-01-30", check_in_time: "09:00:00" },
 
-  if (employees.length === 0) {
-    throw new Error("No employees found. Attendance seed aborted.");
-  }
+    { employee_id: 2, date: "2025-01-30", check_in_time: "08:55:00" },
 
-  const attendanceData = employees.map((emp) => ({
-    employee_id: emp.id,
-    date: "2025-02-01",
-    check_in_time: "09:00",
-  }));
+    { employee_id: 3, date: "2025-01-31", check_in_time: "09:00:00" },
 
-  await knex("attendance").insert(attendanceData);
+    { employee_id: 4, date: "2025-01-28", check_in_time: "09:20:00" },
+  ]);
+
+  await knex.raw(
+    "SELECT setval('attendance_id_seq', (SELECT MAX(id) FROM attendance))",
+  );
 };
