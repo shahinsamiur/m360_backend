@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import db from "../config/db";
-// import AppError from "../utils/AppError";
+
 import fs from "fs";
 import path from "path";
 import sendResponse from "../utils/response";
@@ -10,14 +10,17 @@ export const getEmployees = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const users = await db("employees").select(
-      "id",
-      "name",
-      "designation",
-      "photo_path",
-    );
+    const { search } = req.query;
 
-    sendResponse(res, 200, true, "fetch successful", users);
+    let query = db("employees").select("*");
+
+    if (search && typeof search === "string") {
+      query = query.where("name", "ilike", `%${search}%`);
+    }
+
+    const users = await query;
+
+    sendResponse(res, 200, true, "Fetch successful", users);
   } catch (error) {
     next(error);
   }

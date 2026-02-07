@@ -20,7 +20,6 @@ export const getAttendanceReport = async (
       return;
     }
 
-    // Parse month safely
     const [year, mon] = month.split("-").map(Number);
     if (!year || !mon || mon < 1 || mon > 12) {
       sendResponse(res, 400, false, "Invalid month format. Use YYYY-MM");
@@ -28,7 +27,7 @@ export const getAttendanceReport = async (
     }
 
     const startDate = `${year}-${String(mon).padStart(2, "0")}-01`;
-    const lastDay = new Date(year, mon, 0).getDate(); // correct last day
+    const lastDay = new Date(year, mon, 0).getDate();
     const endDate = `${year}-${String(mon).padStart(2, "0")}-${lastDay}`;
 
     let query = db("employees")

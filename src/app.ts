@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import errorHandler from "./middleware/errorHandler";
 import authRoutes from "./routes/authRoutes";
-import employeesRoutes from "./routes/employees";
+import employeesRoutes from "./routes/employeesRoutes";
 import AttendanceRoutes from "./routes/attendanceRoutes";
 import { multerErrorHandler } from "./middleware/multerErrorHandler";
 import reportsRoutes from "./routes/reportsRoutes";
