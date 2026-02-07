@@ -9,9 +9,14 @@ export const getEmployees = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const users = await db("users").select("id", "name", "email", "role");
+    const users = await db("employees").select(
+      "id",
+      "name",
+      "designation",
+      "photo_path",
+    );
 
-    sendResponse(res, 200, true, "Login successful", users);
+    sendResponse(res, 200, true, "fetch successful", users);
   } catch (error) {
     next(error);
   }
@@ -23,11 +28,34 @@ export const getEmployeeById = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const user = await db("users")
-      .select("id", "name", "email", "role")
+    const employee = await db("employees")
+      .select(
+        "id",
+        "name",
+        "age",
+        "designation",
+        "hiring_date",
+        "date_of_birth",
+        "salary",
+        "photo_path",
+        "created_at",
+      )
       .where("id", req.params.id);
-
-    sendResponse(res, 200, true, "Login successful", user);
+    const employeeAttendance = await db("attendance").where(
+      "id",
+      req.params.id,
+    );
+    let employeeData = {
+      user_info: employee[0],
+      attendanceInfo: employeeAttendance,
+    };
+    sendResponse(
+      res,
+      200,
+      true,
+      "Employee Data Fetch successful",
+      employeeData,
+    );
   } catch (error) {
     next(error);
   }
@@ -39,11 +67,11 @@ export const createEmployee = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const user = await db("users")
-      .select("id", "name", "email", "role")
+    const user = await db("employees")
+      .select("id", "name", "email")
       .where("id", req.params.id);
 
-    sendResponse(res, 200, true, "Login successful", user);
+    sendResponse(res, 200, true, "Employee Account Created successful", user);
   } catch (error) {
     next(error);
   }
@@ -55,7 +83,7 @@ export const updateEmployee = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const user = await db("users")
+    const user = await db("employees")
       .select("id", "name", "email", "role")
       .where("id", req.params.id);
 
@@ -71,7 +99,7 @@ export const deleteEmployee = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    await db("users").where("id", req.params.id).delete();
+    await db("employees").where("id", req.params.id).delete();
 
     sendResponse(res, 200, true, "user deleted");
   } catch (error) {

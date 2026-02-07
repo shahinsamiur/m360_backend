@@ -26,7 +26,6 @@ const authMiddleware = async (
 ): Promise<void> => {
   try {
     const authHeader = req.headers.authorization;
-
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       throw new AppError("Unauthorized: token missing", 401);
     }
@@ -38,8 +37,8 @@ const authMiddleware = async (
       process.env.JWT_SECRET as string,
     ) as TokenPayload;
 
-    const users = await db("users")
-      .select("id", "name", "email", "role")
+    const users = await db("hr_users")
+      .select("id", "name", "email")
       .where("id", decoded.id);
 
     if (users.length === 0) {

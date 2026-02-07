@@ -5,7 +5,6 @@ export default class AppError extends Error {
     super(message);
     this.statusCode = statusCode;
 
-    // Only needed to fix TypeScript issue with extending built-in Error
     Object.setPrototypeOf(this, AppError.prototype);
 
     if (Error.captureStackTrace) {

@@ -5,24 +5,16 @@ import db from "../config/db";
 import AppError from "../utils/AppError";
 import sendResponse from "../utils/response";
 
-interface JwtPayload {
-  id: number;
-  role: string;
-}
-
 export const login = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const { email, password } = req.body as {
-      email: string;
-      password: string;
-    };
+    const { email, password } = req.body;
 
-    const users = await db("users")
-      .select("id", "name", "email", "role", "password")
+    const users = await db("hr_users")
+      .select("id", "name", "email", "password_hash")
       .where("email", email);
 
     if (users.length === 0) {
@@ -30,17 +22,17 @@ export const login = async (
     }
 
     const user = users[0];
-    const isMatch = await bcrypt.compare(password, user.password);
-
+    // console.log(user);
+    // const hashedPassword = await bcrypt.hash(password, 10);
+    // console.log(hashedPassword);
+    const isMatch = await bcrypt.compare(password, user.password_hash);
     if (!isMatch) {
       throw new AppError("Invalid email or password", 401);
     }
 
-    const token = jwt.sign(
-      { id: user.id, role: user.role } as JwtPayload,
-      process.env.JWT_SECRET as string,
-      { expiresIn: "7d" },
-    );
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, {
+      expiresIn: "7d",
+    });
 
     res.cookie("token", token, {
       httpOnly: true,
@@ -53,7 +45,7 @@ export const login = async (
       id: user.id,
       name: user.name,
       email: user.email,
-      role: user.role,
+      token: token,
     });
   } catch (error) {
     next(error);
