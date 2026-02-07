@@ -3,6 +3,7 @@ import cors from "cors";
 import errorHandler from "./middleware/errorHandler";
 import authRoutes from "./routes/authRoutes";
 import employeesRoutes from "./routes/employees";
+import { multerErrorHandler } from "./middleware/multerErrorHandler";
 const app = express();
 app.use(
   cors({
@@ -16,6 +17,7 @@ app.use(express.json());
 app.get("/", (req: Request, res: Response) => {
   res.send("right endpoint");
 });
+app.use(multerErrorHandler);
 app.use("/api/auth", authRoutes);
 app.use("/api/employees", employeesRoutes);
 app.use("/api/attendance", authRoutes);

@@ -25,5 +25,5 @@ router.put(
   validate(updateEmployeeSchema),
   employeesController.updateEmployee,
 );
-router.delete("/:id", employeesController.updateEmployee);
+router.delete("/:id", employeesController.deleteEmployee);
 export default router;
