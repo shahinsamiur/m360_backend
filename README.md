@@ -26,8 +26,8 @@ Thank you very much for giving me the opportunity to work on this task and for t
 ### 1️⃣ Clone the Repository
 
 ```bash
-git clone https://github.com/<your-username>/<repository-name>.git
-cd <repository-name>
+git clone https://github.com/shahinsamiur/m360_backend
+cd m360_backend
 ```
 
 ### 2️⃣ Install Dependencies
