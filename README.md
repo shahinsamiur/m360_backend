@@ -3,8 +3,6 @@
 
 Thank you very much for giving me the opportunity to work on this task and for taking the time to review it.
 
-I am grateful for your time and consideration, and I would be happy to discuss the implementation, design decisions, or possible improvements if needed.
-
 
 **— samiur Shahin**
 ---
