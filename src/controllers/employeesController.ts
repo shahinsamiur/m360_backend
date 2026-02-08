@@ -4,6 +4,8 @@ import db from "../config/db";
 import fs from "fs";
 import path from "path";
 import sendResponse from "../utils/response";
+
+const Base_URL: string = process.env.BASE_URL || "http://localhost:5000";
 export const getEmployees = async (
   req: Request,
   res: Response,
@@ -37,6 +39,7 @@ export const getEmployees = async (
 
     sendResponse(res, 200, true, "Fetch successful", {
       total,
+      Base_URL,
       page: pageNumber,
       limit: pageSize,
       data: users,
@@ -74,6 +77,7 @@ export const getEmployeeById = async (
       return;
     }
     let employeeData = {
+      Base_URL,
       user_info: employee[0],
       attendanceInfo: employeeAttendance,
     };
@@ -169,7 +173,6 @@ export const updateEmployee = async (
       sendResponse(res, 404, false, "Employee not found");
       return;
     }
-
     sendResponse(
       res,
       200,

@@ -6,6 +6,7 @@ import employeesRoutes from "./routes/employeesRoutes";
 import AttendanceRoutes from "./routes/attendanceRoutes";
 import { multerErrorHandler } from "./middleware/multerErrorHandler";
 import reportsRoutes from "./routes/reportsRoutes";
+import path from "path";
 const app = express();
 app.use(
   cors({
@@ -16,6 +17,9 @@ app.use(
   }),
 );
 app.use(express.json());
+
+app.use("/uploads", express.static(path.join(process.cwd(), "src/uploads")));
+app.use(express.urlencoded({ extended: true }));
 app.get("/", (req: Request, res: Response) => {
   res.send("right endpoint");
 });
